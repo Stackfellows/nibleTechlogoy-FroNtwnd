@@ -95,4 +95,11 @@ Build the application for production:
 ```bash
 npm run build
 ```
-Developer Devasad
+
+## 🙏 Acknowledgments
+
+- Built with [Rocket.new](https://rocket.new)
+- Powered by React and Vite
+- Styled with Tailwind CSS
+
+Built with ❤️ on Rocket.new

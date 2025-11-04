@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
 import Icon from "../../../components/AppIcon";
 import Image from "../../../components/AppImage";
 import Button from "../../../components/ui/Button";
@@ -25,7 +24,7 @@ const HeroSection = () => {
       icon: "Code",
       color: "from-blue-500 to-cyan-500",
       image: "https://images.unsplash.com/photo-1607266424522-ccef52eb95ac",
-      alt: "Developer typing code on laptop with multiple monitors showing colorful programming interface",
+      alt: "Developer typing code on laptop",
     },
     {
       id: 2,
@@ -34,7 +33,7 @@ const HeroSection = () => {
       icon: "Smartphone",
       color: "from-purple-500 to-pink-500",
       image: "https://images.unsplash.com/photo-1607270787560-406a02164403",
-      alt: "Hands holding smartphone displaying modern mobile app interface with colorful UI elements",
+      alt: "Hands holding smartphone displaying app",
     },
     {
       id: 3,
@@ -43,14 +42,14 @@ const HeroSection = () => {
       icon: "TrendingUp",
       color: "from-green-500 to-emerald-500",
       image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3",
-      alt: "Business analytics dashboard on computer screen showing colorful charts and growth metrics",
+      alt: "Business analytics dashboard on computer",
     },
   ];
 
   useEffect(() => {
     setIsVisible(true);
     const interval = setInterval(() => {
-      setCurrentMetric((prev) => (prev + 1) % metrics?.length);
+      setCurrentMetric((prev) => (prev + 1) % metrics.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -71,39 +70,33 @@ const HeroSection = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
   };
 
   const floatingVariants = {
     animate: {
-      y: [-10, 10, -10],
-      transition: {
-        duration: 6,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
+      y: [-8, 8, -8],
+      transition: { duration: 6, repeat: Infinity, ease: "easeInOut" },
     },
   };
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-background via-surface to-muted overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse-slow"></div>
+      {/* Background Gradient Circles (lighter for mobile) */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-60 h-60 bg-primary/10 rounded-full blur-2xl sm:blur-3xl animate-pulse-slow"></div>
         <div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-slow"
+          className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-2xl sm:blur-3xl animate-pulse-slow"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/3 to-accent/3 rounded-full blur-3xl animate-pulse-slow"
-          style={{ animationDelay: "4s" }}
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-primary/5 to-accent/5 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "3s" }}
         ></div>
       </div>
-      {/* Floating Tech Icons */}
+
+      {/* Floating Icons (hidden on mobile) */}
       <motion.div
         variants={floatingVariants}
         animate="animate"
@@ -117,20 +110,22 @@ const HeroSection = () => {
         variants={floatingVariants}
         animate="animate"
         className="absolute bottom-32 left-20 hidden lg:block"
-        style={{ animationDelay: "3s" }}
+        style={{ animationDelay: "2s" }}
       >
         <div className="w-12 h-12 bg-gradient-to-br from-success to-emerald-600 rounded-xl flex items-center justify-center shadow-brand">
           <Icon name="Rocket" size={24} color="white" />
         </div>
       </motion.div>
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+
+      {/* Main Content */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12 sm:pb-16">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isVisible ? "visible" : "hidden"}
-          className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]"
+          className="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]"
         >
-          {/* Left Content */}
+          {/* Left Side */}
           <div className="space-y-8">
             <motion.div variants={itemVariants} className="space-y-6">
               <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
@@ -138,22 +133,22 @@ const HeroSection = () => {
                 <span>Digital Transformation Experts</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-primary leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-brand-primary leading-tight">
                 Technology that{" "}
                 <span className="text-gradient bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
                   Transforms
-                </span>
-                <br />
+                </span>{" "}
                 Your Vision
               </h1>
 
-              <p className="text-xl text-text-secondary leading-relaxed max-w-xl">
+              <p className="text-lg sm:text-xl text-text-secondary leading-relaxed max-w-xl">
                 We take strategic, measured bites of complex challenges to
-                deliver digestible, powerful solutions that drive meaningful
-                growth for your business.
+                deliver powerful, meaningful solutions that drive business
+                growth.
               </p>
             </motion.div>
 
+            {/* Buttons */}
             <motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4"
@@ -178,15 +173,15 @@ const HeroSection = () => {
               </Button>
             </motion.div>
 
-            {/* Animated Metrics */}
+            {/* Metrics */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-8"
             >
-              {metrics?.map((metric, index) => (
+              {metrics.map((metric, index) => (
                 <motion.div
                   key={index}
-                  className={`text-center p-4 rounded-2xl transition-brand ${
+                  className={`text-center p-3 sm:p-4 rounded-2xl transition-brand ${
                     currentMetric === index
                       ? "bg-primary/10 border-2 border-primary/20 scale-105"
                       : "bg-surface/50 border border-border hover:bg-surface"
@@ -194,72 +189,63 @@ const HeroSection = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <div
-                    className={`text-2xl font-bold ${
+                    className={`text-xl sm:text-2xl font-bold ${
                       currentMetric === index
                         ? "text-primary"
                         : "text-brand-primary"
                     }`}
                   >
-                    {metric?.value}
-                    {metric?.suffix}
+                    {metric.value}
+                    {metric.suffix}
                   </div>
-                  <div className="text-sm text-text-secondary mt-1">
-                    {metric?.label}
+                  <div className="text-xs sm:text-sm text-text-secondary mt-1">
+                    {metric.label}
                   </div>
                 </motion.div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right Content - Service Previews */}
+          {/* Right Side - Services */}
           <motion.div variants={itemVariants} className="relative">
-            <div className="grid gap-6">
-              {services?.map((service, index) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-6">
+              {services.map((service, index) => (
                 <motion.div
-                  key={service?.id}
+                  key={service.id}
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.2 * index, duration: 0.6 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="group relative bg-card border border-border rounded-2xl p-6 shadow-brand hover:shadow-brand-lg transition-brand cursor-pointer overflow-hidden"
+                  whileHover={{ scale: 1.02 }}
+                  className="group relative bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-brand hover:shadow-brand-lg transition-brand cursor-pointer overflow-hidden"
                 >
-                  {/* Background Gradient */}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-r ${service?.color} opacity-0 group-hover:opacity-5 transition-brand`}
+                    className={`absolute inset-0 bg-gradient-to-r ${service.color} opacity-0 group-hover:opacity-5 transition-brand`}
                   ></div>
 
                   <div className="relative z-10 flex items-center space-x-4">
                     <div
-                      className={`w-16 h-16 bg-gradient-to-r ${service?.color} rounded-xl flex items-center justify-center shadow-brand group-hover:scale-110 transition-brand`}
+                      className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${service.color} rounded-xl flex items-center justify-center shadow-brand group-hover:scale-110 transition-brand`}
                     >
-                      <Icon name={service?.icon} size={28} color="white" />
+                      <Icon name={service.icon} size={24} color="white" />
                     </div>
 
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-brand-primary group-hover:text-primary transition-brand">
-                        {service?.title}
+                      <h3 className="text-lg sm:text-xl font-semibold text-brand-primary group-hover:text-primary transition-brand">
+                        {service.title}
                       </h3>
-                      <p className="text-text-secondary mt-1 group-hover:text-text-primary transition-brand">
-                        {service?.description}
+                      <p className="text-sm sm:text-base text-text-secondary mt-1 group-hover:text-text-primary transition-brand">
+                        {service.description}
                       </p>
                     </div>
 
-                    <div className="w-20 h-16 rounded-lg overflow-hidden opacity-80 group-hover:opacity-100 transition-brand">
+                    <div className="hidden sm:block w-16 h-12 rounded-lg overflow-hidden opacity-80 group-hover:opacity-100 transition-brand">
                       <Image
-                        src={service?.image}
-                        alt={service?.alt}
+                        src={service.image}
+                        alt={service.alt}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                  </div>
-
-                  {/* Hover Arrow */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-brand">
-                    <Icon
-                      name="ArrowUpRight"
-                      size={20}
-                      className="text-primary"
-                    />
                   </div>
                 </motion.div>
               ))}
@@ -277,12 +263,12 @@ const HeroSection = () => {
           </motion.div>
         </motion.div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator (hidden on mobile) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.5 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2"
+          className="hidden sm:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 flex-col items-center space-y-2"
         >
           <span className="text-sm text-text-secondary">Scroll to explore</span>
           <motion.div

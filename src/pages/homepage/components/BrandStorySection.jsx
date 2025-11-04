@@ -6,7 +6,7 @@ import Image from "../../../components/AppImage";
 const BrandStorySection = () => {
   const [activeStep, setActiveStep] = useState(0);
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, threshold: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, threshold: 0.15 });
 
   const storySteps = [
     {
@@ -14,44 +14,40 @@ const BrandStorySection = () => {
       title: "Identify",
       subtitle: "Strategic Analysis",
       description:
-        "We take the first strategic bite by deeply understanding your business challenges, market position, and digital transformation goals.",
+        "We take the first step by deeply understanding your business challenges, market position, and transformation goals.",
       icon: "Search",
       color: "from-blue-500 to-cyan-500",
       image: "https://images.unsplash.com/photo-1574674082930-f0cf3d1cfb46",
-      alt: "Business team analyzing data charts and graphs on large wall display in modern office",
     },
     {
       id: 2,
       title: "Design",
       subtitle: "Solution Architecture",
       description:
-        "Breaking down complex requirements into digestible components, we craft tailored solutions that align with your vision and technical needs.",
+        "Breaking down complex requirements, we craft tailored solutions aligned with your vision and technical needs.",
       icon: "Palette",
       color: "from-purple-500 to-pink-500",
       image: "https://images.unsplash.com/photo-1491821240753-4faf4ed28766",
-      alt: "UX designer sketching wireframes and user interface designs on paper with colorful markers",
     },
     {
       id: 3,
       title: "Develop",
       subtitle: "Technical Excellence",
       description:
-        "Our expert team transforms designs into powerful, scalable solutions using cutting-edge technologies and industry best practices.",
+        "Our team transforms designs into powerful, scalable solutions using cutting-edge technologies.",
       icon: "Code2",
       color: "from-green-500 to-emerald-500",
       image: "https://images.unsplash.com/photo-1498502153174-e65bbd350bd3",
-      alt: "Software developer coding on multiple monitors with colorful programming interface and terminal windows",
     },
     {
       id: 4,
       title: "Deploy",
       subtitle: "Seamless Launch",
       description:
-        "We ensure smooth deployment and provide ongoing support, making your digital transformation journey complete and successful.",
+        "We ensure smooth deployment and provide ongoing support for lasting success.",
       icon: "Rocket",
       color: "from-orange-500 to-red-500",
       image: "https://images.unsplash.com/photo-1576267423048-15c0040fec78",
-      alt: "Team celebrating successful project launch with laptops showing deployment dashboard and analytics",
     },
   ];
 
@@ -59,244 +55,174 @@ const BrandStorySection = () => {
     {
       icon: "Target",
       title: "Precision",
-      description:
-        "Every solution is carefully crafted to meet your specific needs",
+      description: "Every solution is crafted to fit your needs.",
     },
     {
       icon: "Zap",
       title: "Innovation",
-      description: "Cutting-edge technologies that keep you ahead of the curve",
+      description: "We use technologies that keep you ahead.",
     },
     {
       icon: "Shield",
       title: "Reliability",
-      description: "Dependable partnerships built on trust and transparency",
+      description: "Partnerships built on trust and results.",
     },
     {
       icon: "Users",
       title: "Collaboration",
-      description: "Working together to achieve extraordinary results",
+      description: "Together, we achieve extraordinary results.",
     },
   ];
 
   useEffect(() => {
     if (isInView) {
       const interval = setInterval(() => {
-        setActiveStep((prev) => (prev + 1) % storySteps?.length);
+        setActiveStep((prev) => (prev + 1) % storySteps.length);
       }, 4000);
       return () => clearInterval(interval);
     }
-  }, [isInView, storySteps?.length]);
+  }, [isInView]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
       y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
   };
 
   return (
     <section
       ref={sectionRef}
-      className="py-20 bg-gradient-to-b from-surface to-background relative overflow-hidden"
+      className="py-16 sm:py-20 bg-gradient-to-b from-surface to-background overflow-hidden"
     >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
-      </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Heading */}
         <motion.div
-          variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="text-center mb-16"
+          variants={fadeUp}
+          className="text-center mb-12 sm:mb-16"
         >
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
-          >
+          <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-5">
             <Icon name="BookOpen" size={16} />
-            <span>Our Story</span>
-          </motion.div>
+            <span className="ml-2">Our Story</span>
+          </div>
 
-          <motion.h2
-            variants={itemVariants}
-            className="text-4xl lg:text-5xl font-bold text-brand-primary mb-6"
-          >
+          <h2 className="text-3xl sm:text-5xl font-bold text-brand-primary mb-4">
             The{" "}
             <span className="text-gradient bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
               Nibble
             </span>{" "}
             Approach
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed"
-          >
-            We believe in taking strategic, measured bites of complex
-            challenges. Like savoring a perfect meal, we break down your digital
-            transformation into digestible, powerful solutions that deliver
-            lasting results.
-          </motion.p>
+          <p className="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+            We take strategic, measured bites of complex challenges — breaking
+            them into powerful, manageable solutions that drive real growth.
+          </p>
         </motion.div>
 
-        {/* Interactive Story Steps */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid lg:grid-cols-2 gap-12 items-center mb-20"
-        >
-          {/* Left - Story Navigation */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            {storySteps?.map((step, index) => (
-              <motion.div
-                key={step?.id}
-                className={`relative p-6 rounded-2xl border transition-brand cursor-pointer ${
+        {/* Story Steps */}
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center mb-16 sm:mb-20">
+          {/* Left - Steps */}
+          <motion.div
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={fadeUp}
+          >
+            {storySteps.map((step, index) => (
+              <div
+                key={step.id}
+                onClick={() => setActiveStep(index)}
+                className={`relative mb-4 p-5 rounded-2xl border cursor-pointer transition-all ${
                   activeStep === index
-                    ? "bg-card border-primary/20 shadow-brand-lg"
+                    ? "bg-card border-primary/30 shadow-md"
                     : "bg-surface/50 border-border hover:bg-card hover:border-primary/10"
                 }`}
-                onClick={() => setActiveStep(index)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
-                {/* Step Number */}
-                <div className="absolute -left-3 top-6">
+                <div className="flex items-start gap-4">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-brand ${
-                      activeStep === index
-                        ? "bg-primary text-white"
-                        : "bg-muted text-text-secondary"
-                    }`}
+                    className={`w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-r ${step.color} text-white`}
                   >
-                    {index + 1}
+                    <Icon name={step.icon} size={22} />
                   </div>
-                </div>
-
-                <div className="flex items-start space-x-4 ml-6">
-                  <div
-                    className={`w-12 h-12 bg-gradient-to-r ${
-                      step?.color
-                    } rounded-xl flex items-center justify-center shadow-brand ${
-                      activeStep === index ? "scale-110" : ""
-                    } transition-brand`}
-                  >
-                    <Icon name={step?.icon} size={24} color="white" />
-                  </div>
-
-                  <div className="flex-1">
+                  <div>
                     <h3
-                      className={`text-xl font-semibold mb-1 transition-brand ${
+                      className={`text-lg font-semibold ${
                         activeStep === index
                           ? "text-primary"
                           : "text-brand-primary"
                       }`}
                     >
-                      {step?.title}
+                      {step.title}
                     </h3>
-                    <p className="text-sm text-accent font-medium mb-2">
-                      {step?.subtitle}
+                    <p className="text-sm text-accent font-medium">
+                      {step.subtitle}
                     </p>
-                    <p
-                      className={`text-text-secondary transition-brand ${
-                        activeStep === index ? "text-text-primary" : ""
-                      }`}
-                    >
-                      {step?.description}
+                    <p className="text-sm text-text-secondary mt-1">
+                      {step.description}
                     </p>
                   </div>
                 </div>
-
-                {/* Progress Line */}
-                {index < storySteps?.length - 1 && (
-                  <div className="absolute left-1 top-14 w-0.5 h-16 bg-border"></div>
-                )}
-              </motion.div>
+              </div>
             ))}
           </motion.div>
 
-          {/* Right - Visual Display */}
-          <motion.div variants={itemVariants} className="relative">
-            <div className="relative bg-card rounded-3xl p-8 shadow-brand-lg border border-border overflow-hidden">
-              {/* Background Gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${storySteps?.[activeStep]?.color} opacity-5 transition-brand`}
-              ></div>
-
-              <div className="relative z-10">
-                <div className="aspect-video rounded-2xl overflow-hidden mb-6 shadow-brand">
-                  <Image
-                    src={storySteps?.[activeStep]?.image}
-                    alt={storySteps?.[activeStep]?.alt}
-                    className="w-full h-full object-cover transition-brand hover:scale-105"
-                  />
-                </div>
-
-                <div className="text-center">
-                  <h4 className="text-2xl font-bold text-brand-primary mb-2">
-                    {storySteps?.[activeStep]?.title}
-                  </h4>
-                  <p className="text-accent font-medium mb-4">
-                    {storySteps?.[activeStep]?.subtitle}
-                  </p>
-                  <p className="text-text-secondary leading-relaxed">
-                    {storySteps?.[activeStep]?.description}
-                  </p>
-                </div>
+          {/* Right - Image */}
+          <motion.div
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={fadeUp}
+            className="relative"
+          >
+            <div className="bg-card rounded-3xl p-4 sm:p-6 border border-border shadow-md overflow-hidden">
+              <div className="aspect-video rounded-2xl overflow-hidden">
+                <Image
+                  src={storySteps[activeStep].image}
+                  alt={storySteps[activeStep].title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
               </div>
-
-              {/* Floating Elements */}
-              <div className="absolute top-4 right-4 w-3 h-3 bg-success rounded-full animate-pulse"></div>
-              <div
-                className="absolute bottom-4 left-4 w-2 h-2 bg-primary rounded-full animate-pulse"
-                style={{ animationDelay: "1s" }}
-              ></div>
+              <div className="text-center mt-4">
+                <h4 className="text-xl font-semibold text-brand-primary">
+                  {storySteps[activeStep].title}
+                </h4>
+                <p className="text-sm text-accent mb-2">
+                  {storySteps[activeStep].subtitle}
+                </p>
+                <p className="text-text-secondary text-sm">
+                  {storySteps[activeStep].description}
+                </p>
+              </div>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Company Values */}
+        {/* Values Section */}
         <motion.div
-          variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={fadeUp}
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
         >
-          {companyValues?.map((value, index) => (
-            <motion.div
+          {companyValues.map((value, index) => (
+            <div
               key={index}
-              variants={itemVariants}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-card border border-border rounded-2xl p-6 text-center shadow-brand hover:shadow-brand-lg transition-brand group"
+              className="bg-card border border-border rounded-2xl p-4 sm:p-6 text-center shadow-sm hover:shadow-md transition-all"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-brand shadow-brand">
-                <Icon name={value?.icon} size={28} color="white" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+                <Icon name={value.icon} size={24} color="white" />
               </div>
-              <h4 className="text-lg font-semibold text-brand-primary mb-2 group-hover:text-primary transition-brand">
-                {value?.title}
+              <h4 className="text-base sm:text-lg font-semibold text-brand-primary mb-1">
+                {value.title}
               </h4>
-              <p className="text-text-secondary text-sm leading-relaxed group-hover:text-text-primary transition-brand">
-                {value?.description}
+              <p className="text-xs sm:text-sm text-text-secondary">
+                {value.description}
               </p>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </div>

@@ -44,49 +44,53 @@ const SocialProofSection = () => {
   const partnerships = [
     {
       name: "Google Partner",
-      logo: "https://via.placeholder.com/120x60/4285F4/FFFFFF?text=Google",
-      logoAlt:
-        "Google Partner certification badge with blue and white Google logo",
+      logo: "/assets/partners/google.png",
+      logoAlt: "Google Partner Certification Badge",
       description: "Certified Google Ads & Analytics Partner",
       level: "Premier",
     },
     {
       name: "AWS Partner",
-      logo: "https://via.placeholder.com/120x60/FF9900/FFFFFF?text=AWS",
-      logoAlt: "Amazon Web Services partner logo with orange AWS branding",
+      logo: "/assets/partners/aws.png",
+      logoAlt: "AWS Partner Badge",
       description: "Advanced Consulting Partner",
       level: "Advanced",
     },
     {
       name: "Microsoft Partner",
-      logo: "https://via.placeholder.com/120x60/00BCF2/FFFFFF?text=Microsoft",
-      logoAlt: "Microsoft Partner Network logo with blue Microsoft branding",
+      logo: "/assets/partners/microsoft.png",
+      logoAlt: "Microsoft Partner Logo",
       description: "Gold Application Development Partner",
       level: "Gold",
     },
     {
       name: "Meta Partner",
-      logo: "https://via.placeholder.com/120x60/1877F2/FFFFFF?text=Meta",
-      logoAlt:
-        "Meta Business Partner logo with blue Meta branding and infinity symbol",
+      logo: "/assets/partners/meta.png",
+      logoAlt: "Meta Business Partner Logo",
       description: "Meta Business Partner",
       level: "Certified",
     },
     {
       name: "Shopify Partner",
-      logo: "https://via.placeholder.com/120x60/96BF48/FFFFFF?text=Shopify",
-      logoAlt:
-        "Shopify Partner logo with green Shopify branding and shopping bag icon",
+      logo: "/assets/partners/shopify.png",
+      logoAlt: "Shopify Partner Logo",
       description: "Shopify Plus Partner",
       level: "Plus",
     },
     {
       name: "HubSpot Partner",
-      logo: "https://via.placeholder.com/120x60/FF7A59/FFFFFF?text=HubSpot",
-      logoAlt:
-        "HubSpot Partner logo with orange HubSpot branding and sprocket icon",
+      logo: "/assets/partners/hubspot.png",
+      logoAlt: "HubSpot Partner Logo",
       description: "Diamond Solutions Partner",
       level: "Diamond",
+    },
+    // 🆕 React Partner Added
+    {
+      name: "React Partner",
+      logo: "/assets/partners/react.png",
+      logoAlt: "React Partner Logo",
+      description: "Official React Development & Consulting Partner",
+      level: "Certified",
     },
   ];
 
@@ -127,43 +131,33 @@ const SocialProofSection = () => {
   useEffect(() => {
     if (isInView) {
       const interval = setInterval(() => {
-        setCurrentStat((prev) => (prev + 1) % liveStats?.length);
-      }, 2000);
+        setCurrentStat((prev) => (prev + 1) % liveStats.length);
+      }, 2500);
       return () => clearInterval(interval);
     }
-  }, [isInView, liveStats?.length]);
+  }, [isInView]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
   };
 
   const floatingVariants = {
     animate: {
-      y: [-5, 5, -5],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
+      y: [0, 3, 0],
+      transition: { duration: 6, repeat: Infinity, ease: "easeInOut" },
     },
   };
 
@@ -172,13 +166,14 @@ const SocialProofSection = () => {
       ref={sectionRef}
       className="py-20 bg-gradient-to-b from-muted to-background relative overflow-hidden"
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-success/5 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent/3 rounded-full blur-3xl"></div>
+      {/* Light Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-primary/5 rounded-full blur-lg"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-success/5 rounded-full blur-lg"></div>
       </div>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header Section */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -198,14 +193,14 @@ const SocialProofSection = () => {
             className="text-4xl lg:text-5xl font-bold text-brand-primary mb-6"
           >
             Proven{" "}
-            <span className="text-gradient bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
               Excellence
             </span>
           </motion.h2>
 
           <motion.p
             variants={itemVariants}
-            className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed"
+            className="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed"
           >
             Our commitment to quality and innovation is recognized by industry
             leaders, certified by global standards, and validated by client
@@ -213,73 +208,71 @@ const SocialProofSection = () => {
           </motion.p>
         </motion.div>
 
-        {/* Live Stats Dashboard */}
+        {/* Live Stats */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
         >
-          {liveStats?.map((stat, index) => (
+          {liveStats.map((stat, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              className={`bg-card border border-border rounded-2xl p-6 text-center shadow-brand hover:shadow-brand-lg transition-brand ${
+              className={`bg-card border border-border rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition-transform duration-300 ${
                 currentStat === index ? "ring-2 ring-primary/20 scale-105" : ""
               }`}
             >
-              <div className={`text-3xl font-bold mb-2 ${stat?.color}`}>
-                {stat?.value}
-                {stat?.suffix}
+              <div className={`text-3xl font-bold mb-2 ${stat.color}`}>
+                {stat.value}
+                {stat.suffix}
               </div>
               <div className="text-text-secondary font-medium">
-                {stat?.label}
+                {stat.label}
               </div>
-              {currentStat === index && (
-                <div className="mt-3 flex justify-center">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                </div>
-              )}
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Achievements Grid */}
+        {/* Achievements */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="grid lg:grid-cols-3 gap-8 mb-16"
         >
-          {achievements?.map((achievement, index) => (
+          {achievements.map((achievement, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ y: -5 }}
-              className="bg-card border border-border rounded-2xl p-6 shadow-brand hover:shadow-brand-lg transition-brand"
+              whileHover={{ y: -3 }}
+              className="bg-card border border-border rounded-2xl p-6 shadow-md hover:shadow-lg transition-all"
             >
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-brand">
-                  <Icon name={achievement?.icon} size={24} color="white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+                  <Icon name={achievement.icon} size={24} color="white" />
                 </div>
                 <h3 className="text-xl font-bold text-brand-primary">
-                  {achievement?.title}
+                  {achievement.title}
                 </h3>
               </div>
 
-              <div className="space-y-3">
-                {achievement?.items?.map((item, itemIndex) => (
-                  <div key={itemIndex} className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-success rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-text-secondary">{item}</span>
-                  </div>
+              <ul className="space-y-2">
+                {achievement.items.map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start space-x-3 text-text-secondary"
+                  >
+                    <div className="w-2 h-2 bg-success rounded-full mt-2"></div>
+                    <span>{item}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Technology Partnerships */}
+        {/* Partnerships */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -291,9 +284,8 @@ const SocialProofSection = () => {
               Technology Partners
             </h3>
             <p className="text-text-secondary max-w-2xl mx-auto">
-              We maintain strategic partnerships with leading technology
-              companies to deliver cutting-edge solutions and ensure the highest
-              quality standards.
+              Strategic partnerships with top tech leaders to deliver
+              excellence.
             </p>
           </motion.div>
 
@@ -301,34 +293,35 @@ const SocialProofSection = () => {
             variants={itemVariants}
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {partnerships?.map((partner, index) => (
+            {partnerships.map((partner, i) => (
               <motion.div
-                key={index}
-                whileHover={{ scale: 1.02, y: -2 }}
-                className="bg-card border border-border rounded-2xl p-6 shadow-brand hover:shadow-brand-lg transition-brand group"
+                key={i}
+                whileHover={{ scale: 1.02 }}
+                className="bg-card border border-border rounded-2xl p-6 shadow-md hover:shadow-lg transition-all"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <Image
-                    src={partner?.logo}
-                    alt={partner?.logoAlt}
-                    className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-brand"
-                  />
+                  {/* <Image
+                    src={partner.logo}
+                    alt={partner.logoAlt}
+                    loading="lazy"
+                    className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-all duration-300"
+                  /> */}
                   <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                    {partner?.level}
+                    {partner.level}
                   </span>
                 </div>
                 <h4 className="font-semibold text-brand-primary mb-1">
-                  {partner?.name}
+                  {partner.name}
                 </h4>
                 <p className="text-sm text-text-secondary">
-                  {partner?.description}
+                  {partner.description}
                 </p>
               </motion.div>
             ))}
           </motion.div>
         </motion.div>
 
-        {/* Security & Compliance Certifications */}
+        {/* Certifications */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -339,39 +332,33 @@ const SocialProofSection = () => {
               Security & Compliance
             </h3>
             <p className="text-text-secondary max-w-2xl mx-auto">
-              Your data security and privacy are our top priorities. We maintain
-              the highest industry standards and certifications to protect your
-              business.
+              We meet the highest global standards for privacy and security.
             </p>
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {certifications?.map((cert, index) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {certifications.map((cert, i) => (
               <motion.div
-                key={index}
+                key={i}
                 variants={floatingVariants}
                 animate="animate"
-                style={{ animationDelay: `${index * 0.5}s` }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-card border border-border rounded-2xl p-6 text-center shadow-brand hover:shadow-brand-lg transition-brand group"
+                whileHover={{ scale: 1.03 }}
+                className="bg-card border border-border rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition-all"
               >
                 <div
-                  className={`w-16 h-16 bg-gradient-to-r ${cert?.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-brand shadow-brand`}
+                  className={`w-16 h-16 bg-gradient-to-r ${cert.color} rounded-2xl flex items-center justify-center mx-auto mb-4`}
                 >
-                  <Icon name={cert?.icon} size={28} color="white" />
+                  <Icon name={cert.icon} size={28} color="white" />
                 </div>
-                <h4 className="font-bold text-brand-primary mb-2 group-hover:text-primary transition-brand">
-                  {cert?.name}
+                <h4 className="font-bold text-brand-primary mb-2">
+                  {cert.name}
                 </h4>
-                <p className="text-sm text-text-secondary group-hover:text-text-primary transition-brand">
-                  {cert?.description}
+                <p className="text-sm text-text-secondary">
+                  {cert.description}
                 </p>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

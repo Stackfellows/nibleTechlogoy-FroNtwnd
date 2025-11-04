@@ -9,6 +9,7 @@ import Portfolio from "./pages/portfolio";
 import Contact from "./pages/contact";
 import About from "./pages/about";
 import Homepage from "./pages/homepage";
+import AdminDashboard from "pages/AdminDashboard";
 
 const Routes = () => {
   return (
@@ -25,6 +26,7 @@ const Routes = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/homepage" element={<Homepage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
 
           {/* ✅ 404 fallback */}
           {/* <Route path="*" element={<NotFound />} /> */}

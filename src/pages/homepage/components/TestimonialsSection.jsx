@@ -1,7 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import { motion, useInView } from "framer-motion";
 import Icon from "../../../components/AppIcon";
 import Image from "../../../components/AppImage";
+
+// React Icons
+import {
+  FaReact,
+  FaNodeJs,
+  FaAws,
+  FaCloud,
+  FaShopify,
+  FaGoogle,
+} from "react-icons/fa";
+import { SiMongodb, SiTailwindcss } from "react-icons/si";
 
 const TestimonialsSection = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -364,6 +376,7 @@ const TestimonialsSection = () => {
         </motion.div>
 
         {/* Company Logos */}
+        {/* Company Logos / Technology Partners */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -372,27 +385,47 @@ const TestimonialsSection = () => {
         >
           <motion.p
             variants={itemVariants}
-            className="text-text-secondary mb-8"
+            className="text-text-secondary mb-8 text-lg"
           >
-            Trusted by 150+ companies worldwide
+            Trusted Technology Partners
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-wrap justify-center items-center gap-8 opacity-60 hover:opacity-100 transition-brand"
+            className="flex flex-wrap justify-center items-center gap-10 text-5xl text-primary/70 hover:text-primary transition-all duration-500"
           >
-            {companyLogos?.map((company, index) => (
-              <div
-                key={index}
-                className="grayscale hover:grayscale-0 transition-brand"
-              >
-                <Image
-                  src={company?.logo}
-                  alt={`${company?.name} company logo`}
-                  className="h-8 w-auto"
-                />
-              </div>
-            ))}
+            <FaReact
+              className="hover:text-cyan-400 transition-transform hover:scale-110"
+              title="React"
+            />
+            <FaNodeJs
+              className="hover:text-green-500 transition-transform hover:scale-110"
+              title="Node.js"
+            />
+            <SiMongodb
+              className="hover:text-emerald-500 transition-transform hover:scale-110"
+              title="MongoDB"
+            />
+            <FaAws
+              className="hover:text-orange-400 transition-transform hover:scale-110"
+              title="AWS"
+            />
+            <FaCloud
+              className="hover:text-sky-400 transition-transform hover:scale-110"
+              title="Cloud"
+            />
+            <FaShopify
+              className="hover:text-green-400 transition-transform hover:scale-110"
+              title="Shopify"
+            />
+            <SiTailwindcss
+              className="hover:text-cyan-500 transition-transform hover:scale-110"
+              title="Tailwind CSS"
+            />
+            <FaGoogle
+              className="hover:text-red-500 transition-transform hover:scale-110"
+              title="Google"
+            />
           </motion.div>
         </motion.div>
       </div>
