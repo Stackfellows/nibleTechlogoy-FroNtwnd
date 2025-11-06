@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import axios from "axios";
 
 const ProjectEstimator = () => {
   const [selectedService, setSelectedService] = useState("web-development");
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [projectComplexity, setProjectComplexity] = useState("medium");
   const [timeline, setTimeline] = useState("3-6-months");
+  const [email, setEmail] = useState(""); // ✅ added email input
+  const [fullName, setFullName] = useState(""); // ✅ added name input
+  const [isLoading, setIsLoading] = useState(false);
 
   const services = {
     "web-development": {
@@ -71,341 +75,214 @@ const ProjectEstimator = () => {
   };
 
   const complexityMultipliers = {
-    simple: {
-      multiplier: 0.8,
-      name: "Simple",
-      description: "Basic functionality, standard design",
-    },
-    medium: {
-      multiplier: 1.0,
-      name: "Medium",
-      description: "Custom features, moderate complexity",
-    },
-    complex: {
-      multiplier: 1.5,
-      name: "Complex",
-      description: "Advanced features, high customization",
-    },
-    enterprise: {
-      multiplier: 2.0,
-      name: "Enterprise",
-      description: "Large scale, multiple integrations",
-    },
+    simple: { multiplier: 0.8, name: "Simple" },
+    medium: { multiplier: 1.0, name: "Medium" },
+    complex: { multiplier: 1.5, name: "Complex" },
+    enterprise: { multiplier: 2.0, name: "Enterprise" },
   };
 
   const timelineMultipliers = {
-    "1-3-months": {
-      multiplier: 1.3,
-      name: "1-3 Months",
-      description: "Rush delivery",
-    },
-    "3-6-months": {
-      multiplier: 1.0,
-      name: "3-6 Months",
-      description: "Standard timeline",
-    },
-    "6-12-months": {
-      multiplier: 0.9,
-      name: "6-12 Months",
-      description: "Extended timeline",
-    },
-    flexible: {
-      multiplier: 0.85,
-      name: "Flexible",
-      description: "No rush, best rates",
-    },
+    "1-3-months": { multiplier: 1.3, name: "1-3 Months" },
+    "3-6-months": { multiplier: 1.0, name: "3-6 Months" },
+    "6-12-months": { multiplier: 0.9, name: "6-12 Months" },
+    flexible: { multiplier: 0.85, name: "Flexible" },
   };
 
-  const currentService = services?.[selectedService];
+  const currentService = services[selectedService];
 
   const calculateEstimate = () => {
-    let basePrice = currentService?.basePrice;
-
-    // Add selected features
-    const featuresPrice = selectedFeatures?.reduce((total, featureId) => {
-      const feature = currentService?.features?.find(
-        (f) => f?.id === featureId
-      );
+    let basePrice = currentService.basePrice;
+    const featuresPrice = selectedFeatures.reduce((total, featureId) => {
+      const feature = currentService.features.find((f) => f.id === featureId);
       return total + (feature?.price || 0);
     }, 0);
-
-    // Apply complexity multiplier
-    const complexityMultiplier =
-      complexityMultipliers?.[projectComplexity]?.multiplier;
-
-    // Apply timeline multiplier
-    const timelineMultiplier = timelineMultipliers?.[timeline]?.multiplier;
-
-    const totalPrice =
-      (basePrice + featuresPrice) * complexityMultiplier * timelineMultiplier;
+    const total =
+      (basePrice + featuresPrice) *
+      complexityMultipliers[projectComplexity].multiplier *
+      timelineMultipliers[timeline].multiplier;
 
     return {
       basePrice,
       featuresPrice,
-      totalPrice: Math.round(totalPrice),
-      savings:
-        totalPrice < basePrice + featuresPrice
-          ? Math.round(basePrice + featuresPrice - totalPrice)
-          : 0,
+      totalPrice: Math.round(total),
     };
-  };
-
-  const toggleFeature = (featureId) => {
-    setSelectedFeatures((prev) =>
-      prev?.includes(featureId)
-        ? prev?.filter((id) => id !== featureId)
-        : [...prev, featureId]
-    );
   };
 
   const estimate = calculateEstimate();
 
+  // ✅ Function to send data and request PDF + email
+  const handleDownloadQuote = async () => {
+    if (!email || !fullName) {
+      alert("Please enter your name and email before downloading the quote.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const payload = {
+        name: fullName,
+        email,
+        projectType: currentService.name,
+        totalEstimate: estimate.totalPrice,
+        timeline: timelineMultipliers[timeline].name,
+        complexity: complexityMultipliers[projectComplexity].name,
+        features: selectedFeatures.map((id) => {
+          const f = currentService.features.find((x) => x.id === id);
+          return f?.name;
+        }),
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/project-estimator",
+        payload,
+        { responseType: "blob" }
+      );
+
+      // Download PDF
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Project_Estimate_${fullName.replace(/\s/g, "_")}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      alert("📩 PDF downloaded & also sent to your email!");
+    } catch (err) {
+      console.error(err);
+      alert("Error sending or downloading PDF");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className="py-16 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
             Project Cost Estimator
           </h2>
           <p className="text-lg text-text-secondary max-w-3xl mx-auto">
-            Get an instant estimate for your project. Customize the features and
-            complexity to see real-time pricing.
+            Get an instant estimate for your project — customize below.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Configuration Panel */}
+          {/* Left Config Panel */}
           <div className="lg:col-span-2 space-y-8">
             {/* Service Selection */}
             <div className="bg-card rounded-brand border border-border p-6">
-              <h3 className="text-xl font-semibold text-text-primary mb-6">
+              <h3 className="text-xl font-semibold mb-6">
                 Select Service Type
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {Object.entries(services)?.map(([key, service]) => (
+                {Object.entries(services).map(([key, s]) => (
                   <button
                     key={key}
                     onClick={() => {
                       setSelectedService(key);
                       setSelectedFeatures([]);
                     }}
-                    className={`p-4 rounded-brand border-2 transition-brand text-left ${
+                    className={`p-4 rounded-brand border-2 transition ${
                       selectedService === key
                         ? "border-primary bg-primary/5 text-primary"
                         : "border-border hover:border-primary/50 hover:bg-muted/50"
                     }`}
                   >
                     <div className="flex items-center space-x-3 mb-2">
-                      <Icon
-                        name={service?.icon}
-                        size={24}
-                        color="currentColor"
-                      />
-                      <span className="font-medium">{service?.name}</span>
+                      <Icon name={s.icon} size={24} />
+                      <span className="font-medium">{s.name}</span>
                     </div>
                     <div className="text-sm opacity-80">
-                      Starting from ${service?.basePrice?.toLocaleString()}
+                      Starting from ${s.basePrice.toLocaleString()}
                     </div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Features Selection */}
+            {/* Features */}
             <div className="bg-card rounded-brand border border-border p-6">
-              <h3 className="text-xl font-semibold text-text-primary mb-6">
-                Select Features
-              </h3>
+              <h3 className="text-xl font-semibold mb-6">Select Features</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentService?.features?.map((feature) => (
+                {currentService.features.map((f) => (
                   <label
-                    key={feature?.id}
-                    className={`flex items-center justify-between p-4 rounded-brand border-2 cursor-pointer transition-brand ${
-                      feature?.included
+                    key={f.id}
+                    className={`flex items-center justify-between p-4 rounded-brand border-2 cursor-pointer transition ${
+                      f.included
                         ? "border-success bg-success/5 text-success cursor-not-allowed"
-                        : selectedFeatures?.includes(feature?.id)
+                        : selectedFeatures.includes(f.id)
                         ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
+                        : "border-border hover:border-primary/50"
                     }`}
                   >
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
-                        checked={
-                          feature?.included ||
-                          selectedFeatures?.includes(feature?.id)
-                        }
+                        checked={f.included || selectedFeatures.includes(f.id)}
                         onChange={() =>
-                          !feature?.included && toggleFeature(feature?.id)
+                          !f.included &&
+                          setSelectedFeatures((prev) =>
+                            prev.includes(f.id)
+                              ? prev.filter((id) => id !== f.id)
+                              : [...prev, f.id]
+                          )
                         }
-                        disabled={feature?.included}
-                        className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
+                        disabled={f.included}
+                        className="w-4 h-4 text-primary"
                       />
-                      <div>
-                        <div className="font-medium">{feature?.name}</div>
-                        {feature?.included && (
-                          <div className="text-xs text-success">Included</div>
-                        )}
-                      </div>
+                      <span className="font-medium">{f.name}</span>
                     </div>
-                    <div className="text-sm font-medium">
-                      {feature?.price === 0
-                        ? "Free"
-                        : `+$${feature?.price?.toLocaleString()}`}
-                    </div>
+                    <span className="text-sm font-medium">
+                      {f.price === 0 ? "Free" : `+$${f.price.toLocaleString()}`}
+                    </span>
                   </label>
                 ))}
               </div>
             </div>
-
-            {/* Complexity & Timeline */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Complexity */}
-              <div className="bg-card rounded-brand border border-border p-6">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">
-                  Project Complexity
-                </h3>
-                <div className="space-y-3">
-                  {Object.entries(complexityMultipliers)?.map(
-                    ([key, complexity]) => (
-                      <label
-                        key={key}
-                        className="flex items-center space-x-3 cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name="complexity"
-                          value={key}
-                          checked={projectComplexity === key}
-                          onChange={(e) =>
-                            setProjectComplexity(e?.target?.value)
-                          }
-                          className="w-4 h-4 text-primary border-border focus:ring-primary"
-                        />
-                        <div className="flex-1">
-                          <div className="font-medium">{complexity?.name}</div>
-                          <div className="text-sm text-text-secondary">
-                            {complexity?.description}
-                          </div>
-                        </div>
-                        <div className="text-sm font-medium">
-                          {complexity?.multiplier === 1
-                            ? "Standard"
-                            : `${complexity?.multiplier}x`}
-                        </div>
-                      </label>
-                    )
-                  )}
-                </div>
-              </div>
-
-              {/* Timeline */}
-              <div className="bg-card rounded-brand border border-border p-6">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">
-                  Project Timeline
-                </h3>
-                <div className="space-y-3">
-                  {Object.entries(timelineMultipliers)?.map(
-                    ([key, timelineOption]) => (
-                      <label
-                        key={key}
-                        className="flex items-center space-x-3 cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name="timeline"
-                          value={key}
-                          checked={timeline === key}
-                          onChange={(e) => setTimeline(e?.target?.value)}
-                          className="w-4 h-4 text-primary border-border focus:ring-primary"
-                        />
-                        <div className="flex-1">
-                          <div className="font-medium">
-                            {timelineOption?.name}
-                          </div>
-                          <div className="text-sm text-text-secondary">
-                            {timelineOption?.description}
-                          </div>
-                        </div>
-                        <div className="text-sm font-medium">
-                          {timelineOption?.multiplier === 1
-                            ? "Standard"
-                            : `${timelineOption?.multiplier}x`}
-                        </div>
-                      </label>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Estimate Panel */}
+          {/* Right Estimate Panel */}
           <div className="lg:col-span-1">
             <div className="bg-card rounded-brand border border-border p-6 sticky top-24">
-              <h3 className="text-xl font-semibold text-text-primary mb-6">
-                Project Estimate
-              </h3>
+              <h3 className="text-xl font-semibold mb-6">Project Estimate</h3>
 
               <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-text-secondary">Base Price</span>
-                  <span className="font-medium">
-                    ${estimate?.basePrice?.toLocaleString()}
-                  </span>
+                <div className="flex justify-between">
+                  <span>Base Price</span>
+                  <span>${estimate.basePrice.toLocaleString()}</span>
                 </div>
-
-                {estimate?.featuresPrice > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">
-                      Additional Features
-                    </span>
-                    <span className="font-medium">
-                      +${estimate?.featuresPrice?.toLocaleString()}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex justify-between items-center">
-                  <span className="text-text-secondary">
-                    Complexity (
-                    {complexityMultipliers?.[projectComplexity]?.name})
-                  </span>
-                  <span className="font-medium">
-                    {complexityMultipliers?.[projectComplexity]?.multiplier}x
-                  </span>
+                <div className="flex justify-between">
+                  <span>Features</span>
+                  <span>+${estimate.featuresPrice.toLocaleString()}</span>
                 </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-text-secondary">
-                    Timeline ({timelineMultipliers?.[timeline]?.name})
-                  </span>
-                  <span className="font-medium">
-                    {timelineMultipliers?.[timeline]?.multiplier}x
-                  </span>
-                </div>
-
-                <hr className="border-border" />
-
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span className="text-text-primary">Total Estimate</span>
+                <hr />
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total Estimate</span>
                   <span className="text-primary">
-                    ${estimate?.totalPrice?.toLocaleString()}
+                    ${estimate.totalPrice.toLocaleString()}
                   </span>
                 </div>
+              </div>
 
-                {estimate?.savings > 0 && (
-                  <div className="bg-success/5 border border-success/20 rounded-brand p-3">
-                    <div className="flex items-center space-x-2 text-success">
-                      <Icon name="TrendingDown" size={16} />
-                      <span className="text-sm font-medium">
-                        You save ${estimate?.savings?.toLocaleString()} with
-                        this timeline
-                      </span>
-                    </div>
-                  </div>
-                )}
+              {/* ✅ Added User Input Section */}
+              <div className="space-y-3 mb-4">
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full p-3 border border-border rounded-brand text-sm focus:ring-2 focus:ring-primary outline-none"
+                />
+                <input
+                  type="email"
+                  placeholder="Enter your email to receive quote"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-3 border border-border rounded-brand text-sm focus:ring-2 focus:ring-primary outline-none"
+                />
               </div>
 
               <div className="space-y-3">
@@ -413,8 +290,7 @@ const ProjectEstimator = () => {
                   variant="default"
                   fullWidth
                   iconName="MessageCircle"
-                  iconPosition="left"
-                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => alert("Let's discuss your project!")}
                 >
                   Discuss This Estimate
                 </Button>
@@ -423,28 +299,11 @@ const ProjectEstimator = () => {
                   variant="outline"
                   fullWidth
                   iconName="Download"
-                  iconPosition="left"
+                  onClick={handleDownloadQuote}
+                  disabled={isLoading}
                 >
-                  Download PDF Quote
+                  {isLoading ? "Generating..." : "Download & Email PDF Quote"}
                 </Button>
-              </div>
-
-              <div className="mt-6 p-4 bg-muted/50 rounded-brand">
-                <div className="flex items-start space-x-2">
-                  <Icon
-                    name="Info"
-                    size={16}
-                    color="var(--color-text-secondary)"
-                    className="mt-0.5"
-                  />
-                  <div className="text-sm text-text-secondary">
-                    <p className="font-medium mb-1">This is an estimate</p>
-                    <p>
-                      Final pricing may vary based on specific requirements and
-                      detailed project analysis.
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
